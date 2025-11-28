@@ -1,7 +1,8 @@
 import { QmateSelector } from "wdio-qmate-service/modules/ui5/types/ui5.types";
 import { BasePage } from "./basePage";
+import { Product } from "../support/product";
 
-export class ProductListPage extends BasePage {
+class ProductListPage extends BasePage {
 
     private static readonly ALL_PRODUCTS_TAB_FILTER_SELECTOR = {
         "elementProperties": {
@@ -105,6 +106,15 @@ export class ProductListPage extends BasePage {
             "metadata": "sap.m.Toolbar"
         }
     }
+    private getTabFilterSelector(filterName: string): QmateSelector{
+        return {
+             "elementProperties": {
+                "viewName": "mycompany.myapp.MyWorklistApp.view.Worklist",
+                "metadata": "sap.m.IconTabFilter",
+                "text": filterName
+            }
+        }
+    }
 
     private getProductNameSiblingSelector(productName:string): QmateSelector{
         return {
@@ -133,6 +143,7 @@ export class ProductListPage extends BasePage {
         }
     }
 
+
     async clickOrderButton(): Promise<void> {
         await ui5.userInteraction.click(ProductListPage.ORDER_BUTTON_SELECTOR);
     }
@@ -140,7 +151,7 @@ export class ProductListPage extends BasePage {
         await ui5.userInteraction.click(ProductListPage.REMOVE_BUTTON_SELECTOR);
     }
 
-    async clickRow(productName: string): Promise<void> {
+    async clickRowByProduct(productName: string): Promise<void> {
         await ui5.userInteraction.clickListItem(this.getListItemSelector(productName));
     }
     async getAllProductsCount(): Promise<number> {
@@ -160,12 +171,12 @@ export class ProductListPage extends BasePage {
         return (await ui5.element.getAllDisplayed(ProductListPage.ITEM_CHECKBOX_SELECTOR)).length;
     }
     
-    async getProductList(): Promise<Array<object>> {
-        const productList: Array<object> = [];
+    async getProductList(): Promise<Array<Product>> {
+        const productList: Array<Product> = [];
         for(let i = 0; i < await this.getRowCount(); i++) {
             productList.push({
                 productName: await ui5.element.getPropertyValue(ProductListPage.PRODUCT_NAME_SELECTOR, "text", i),
-                supplier: await ui5.element.getPropertyValue(ProductListPage.SUPPLIER_SELECTOR, "text", i),
+                supplierName: await ui5.element.getPropertyValue(ProductListPage.SUPPLIER_SELECTOR, "text", i),
                 price: parseFloat(await ui5.element.getPropertyValue(ProductListPage.PRICE_SELECTOR, "number", i)),
                 unitsInStock: parseInt(await ui5.element.getPropertyValue(ProductListPage.UNITS_IN_STOCK_SELECTOR, "number", i))
             });
@@ -179,18 +190,27 @@ export class ProductListPage extends BasePage {
         return parseInt(await ui5.element.getPropertyValue(unitsInStockSelector, "number"));
     }
 
+    async openPage(): Promise<void> {
+        await ui5.navigation.navigateToApplication("worklist/07/webapp/test/mockServer.html?sap-ui-theme=sap_horizon");
+    }
+
     async searchForProduct(searchText: string): Promise<void> {
         await ui5.userInteraction.searchFor(ProductListPage.SERACH_FIELD_SELECTOR, searchText);
         // await common.userInteraction.pressEnter();
     }
 
-    async selectProduct(productName: string): Promise<void> {
+    async selectRowByProduct(productName: string): Promise<void> {
         const checkBoxSelector = {...(this.getProductNameSiblingSelector(productName) as object), 
             ...ProductListPage.ITEM_CHECKBOX_SELECTOR} as QmateSelector;
         await ui5.userInteraction.check(checkBoxSelector);
     }
-
+    async selectTab(filterName: string) {
+        await ui5.userInteraction.clickTab(this.getTabFilterSelector(filterName));
+    }
+    
     async waitForPageLoaded(): Promise<void> {
         await ui5.element.waitForAll(ProductListPage.WORKLIST_TOOLBAR);
     }
 }
+
+export default new ProductListPage();

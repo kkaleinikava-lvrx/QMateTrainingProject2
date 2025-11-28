@@ -1,6 +1,7 @@
+import { Product } from "../support/product";
 import { BasePage } from "./basePage";
 
-export class ProductPage extends BasePage {
+class ProductPage extends BasePage {
     private static readonly PAGE_HEADER_SELECTOR = {
         "elementProperties": {
             "viewName": "mycompany.myapp.MyWorklistApp.view.Object",
@@ -56,7 +57,7 @@ export class ProductPage extends BasePage {
         return parseInt(await ui5.element.getPropertyValue(ProductPage.UNITS_IN_STOCK_SELECTOR, "number"));
     }
 
-    async getProductDetails(): Promise<object> {
+    async getProductDetails(): Promise<Product> {
         return { 
             productName: await this.getProductName(),
             price: await this.getPrice(),
@@ -70,3 +71,5 @@ export class ProductPage extends BasePage {
         await ui5.element.waitForAll(ProductPage.PAGE_HEADER_SELECTOR);
     }
 }
+
+export default new ProductPage();
