@@ -1,5 +1,5 @@
-import { Product } from "../support/product";
-import { BasePage } from "./basePage";
+import { Product } from "../support/product.ts";
+import { BasePage } from "./basePage.ts";
 
 class ProductPage extends BasePage {
     private static readonly PAGE_HEADER_SELECTOR = {

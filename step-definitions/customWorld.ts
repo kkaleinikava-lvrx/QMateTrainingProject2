@@ -1,6 +1,6 @@
 import { World } from "@wdio/cucumber-framework";
-import { Product } from "../support/product";
-import { Filter } from "../support/filter";
+import { Product } from "../support/product.ts";
+import { Filter } from "../support/filter.ts";
 
 const SHORTAGE_THRESHOLD = 10;
 

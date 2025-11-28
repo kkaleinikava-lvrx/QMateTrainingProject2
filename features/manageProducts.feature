@@ -8,9 +8,9 @@ Feature: The Manage Products Fiori app
     Then Verify product details match data from product list
 
     Examples:
-      | product_name |
-      |  |
-      |  |
+      | product_name                    |
+      | Ikura                           |
+      | Uncle Bob's Organic Dried Pears |
 
   Scenario Outline: Product Order Flow
   Verify that after ordering a product, its state is updated correctly in the application.
@@ -22,9 +22,9 @@ Feature: The Manage Products Fiori app
     And Verify product "<product_name>" is in "Plenty in Stock" list
 
     Examples:
-      | product_name |
-      |  |
-      |  |
+      | product_name               |
+      | Northwoods Cranberry Sauce |
+      | Chai                       |
 
   Scenario Outline: Product Deletion
   Verify that deleting a product updates the product listings and counters correctly.
@@ -35,9 +35,9 @@ Feature: The Manage Products Fiori app
     And Verify product "<product_name>" is not in any list
         
     Examples:
-      | product_name |
-      |  |
-      |  |
+      | product_name                 |
+      | Schwarzwälder Kirschtorte    |
+      | Alice Mutton                 |
 
   Scenario Outline: Product Search
   Verify that searching for a product by name via the search field filters the results correctly.
@@ -47,7 +47,7 @@ Feature: The Manage Products Fiori app
     Then Verify search results
         
     Examples:
-      | search_term |
-      |  |
-      |  |
+      | search_term     |
+      | Ch              |
+      | Mishi Kobe Niku |
     

@@ -1,6 +1,6 @@
 import { QmateSelector } from "wdio-qmate-service/modules/ui5/types/ui5.types";
-import { BasePage } from "./basePage";
-import { Product } from "../support/product";
+import { BasePage } from "./basePage.ts";
+import { Product } from "../support/product.ts";
 
 class ProductListPage extends BasePage {
 
@@ -207,7 +207,7 @@ class ProductListPage extends BasePage {
     async selectTab(filterName: string) {
         await ui5.userInteraction.clickTab(this.getTabFilterSelector(filterName));
     }
-    
+
     async waitForPageLoaded(): Promise<void> {
         await ui5.element.waitForAll(ProductListPage.WORKLIST_TOOLBAR);
     }
