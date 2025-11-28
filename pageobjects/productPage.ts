@@ -45,13 +45,13 @@ class ProductPage extends BasePage {
     }
 
     async getPrice(): Promise<number> {
-        return parseFloat(await ui5.element.getPropertyValue(ProductPage.PRICE_TEXT_SELECTOR, "text"));
+        return parseFloat((await ui5.element.getPropertyValue(ProductPage.PRICE_TEXT_SELECTOR, "text")).substring(7));
     }
     async getProductName(): Promise<string> {
-        return await ui5.element.getValue(ProductPage.PRODUCT_NAME_SELECTOR);
+        return await ui5.element.getPropertyValue(ProductPage.PRODUCT_NAME_SELECTOR, "text");
     }
     async getSupplierName(): Promise<string> {
-        return await ui5.element.getValue(ProductPage.SUPPLIER_NAME_SELECTOR);
+        return await ui5.element.getPropertyValue(ProductPage.SUPPLIER_NAME_SELECTOR, "text");
     }
     async getUnitsInStock(): Promise<number> {
         return parseInt(await ui5.element.getPropertyValue(ProductPage.UNITS_IN_STOCK_SELECTOR, "number"));
@@ -60,9 +60,9 @@ class ProductPage extends BasePage {
     async getProductDetails(): Promise<Product> {
         return { 
             productName: await this.getProductName(),
+            supplierName: await this.getSupplierName(),
             price: await this.getPrice(),
-            unitsInStock: await this.getUnitsInStock(),
-            supplierName: await this.getSupplierName()
+            unitsInStock: await this.getUnitsInStock()            
         };
 
     }

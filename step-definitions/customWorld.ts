@@ -4,7 +4,7 @@ import { Filter } from "../support/filter.ts";
 
 const SHORTAGE_THRESHOLD = 10;
 
-export default class CustomWorld<ParametersType> extends World<ParametersType> {
+export default class CustomWorld<ParametersType = any> extends World<ParametersType> {
 
     private products: Array<Product>;
     private selectedProduct: Product | undefined;

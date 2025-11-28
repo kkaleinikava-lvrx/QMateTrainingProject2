@@ -1,18 +1,20 @@
 import { Given, When, Then, setWorldConstructor } from '@wdio/cucumber-framework';
 
-import CustomWorld from './customWorld';
-import ProductListPage from '../pageobjects/productListPage';
-import ProductPage from '../pageobjects/productPage';
-import { Product } from "../support/product";
-import { Filter } from '../support/filter';
+import CustomWorld from './customWorld.ts';
+import ProductListPage from '../pageobjects/productListPage.ts';
+import ProductPage from '../pageobjects/productPage.ts';
+import { Product } from "../support/product.ts";
+import { Filter } from '../support/filter.ts';
 
 setWorldConstructor(CustomWorld);
 
-Given ('Open Manage Product app', async function(): Promise<void> {
+Given ('Open Manage Product app', {timeout: 100000}, async function(): Promise<void> {
     await ProductListPage.openPage();
     await ProductListPage.waitForPageLoaded();
-    this.storeProducts(await ProductListPage.getProductList());
     await browser.takeScreenshot();
+    // common.assertion.expectEqual(await ProductListPage.getAllProductsCount(), 15);
+    this.storeProducts(await ProductListPage.getProductList());
+    
 });
 
 When ('Select product {string}', async function(productName: string): Promise<void> {
@@ -65,19 +67,19 @@ Then ('Verify product {string} is in {string} list', async function(productName:
 });
 
 Then ('Verify product {string} is not in {string} list', async function(productName: string, listName: string): Promise<void> {
-    if (listName === "any") {
-        Object.values(Filter).forEach(async (value) => {
-            await ProductListPage.selectTab(value);
-            await browser.takeScreenshot();
-            const actualProducts = await ProductListPage.getProductList();
-            common.assertion.expectFalse(actualProducts.some((item) => item.productName === productName));
-        })
-    } else {
-        await ProductListPage.selectTab(listName);
+    await ProductListPage.selectTab(listName);
+    await browser.takeScreenshot();
+    const actualProducts = await ProductListPage.getProductList();
+    common.assertion.expectFalse(actualProducts.some((item) => item.productName === productName));  
+});
+
+Then ('Verify product {string} is not in any list', async function(productName: string): Promise<void> {
+    Object.values(Filter).forEach(async (value) => {
+        await ProductListPage.selectTab(value);
         await browser.takeScreenshot();
         const actualProducts = await ProductListPage.getProductList();
         common.assertion.expectFalse(actualProducts.some((item) => item.productName === productName));
-    }   
+    });
 });
 
 Then ('Verify Units in Stock for product {string}', async function(productName: string): Promise<void> {
@@ -86,8 +88,8 @@ Then ('Verify Units in Stock for product {string}', async function(productName: 
     
 });
 
-Then ('Verify item counts for all lists', async function(productName: string): Promise<void> {
-    common.assertion.expectEqual(this.getProducts().lenth, 
+Then ('Verify item counts for all lists', {timeout: 90000}, async function() {
+    common.assertion.expectEqual(this.getProducts().length, 
         await ProductListPage.getAllProductsCount());
     common.assertion.expectEqual(this.getFilteredProducts(Filter.PlentyInStock).length, 
         await ProductListPage.getPlentyInStockCount());
@@ -99,7 +101,7 @@ Then ('Verify item counts for all lists', async function(productName: string): P
 
 Then ('Verify search results', async function(): Promise<void> {
     const searchTerm = this.getSearchTerm();
-    const expectedProducts = (this.getProducts as Array<Product>).filter((item) => item.productName.includes(searchTerm));
-    const actualProducts = ProductListPage.getProductList();
+    const expectedProducts = (this.getProducts() as Array<Product>).filter((item) => item.productName.includes(searchTerm));
+    const actualProducts = await ProductListPage.getProductList();
     common.assertion.expectEqual(expectedProducts, actualProducts);    
 });
