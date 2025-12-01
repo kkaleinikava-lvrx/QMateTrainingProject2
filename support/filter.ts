@@ -1,6 +1,6 @@
 export enum Filter {
-  PlentyInStock = "Plenty In Stock",
+  PlentyInStock = "Plenty in Stock",
   Shortage = "Shortage",
-  OutOfStock = "Out Of Stock",
+  OutOfStock = "Out of Stock",
   All = "Products"
 };

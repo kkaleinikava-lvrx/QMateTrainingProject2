@@ -1,6 +1,6 @@
 export interface Product {
     productName: string,
-    supplierName: string,
-    price: number,
+    supplierName?: string,
+    price?: number,
     unitsInStock: number
 }

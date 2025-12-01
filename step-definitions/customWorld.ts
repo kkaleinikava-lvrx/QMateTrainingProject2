@@ -7,24 +7,17 @@ const SHORTAGE_THRESHOLD = 10;
 export default class CustomWorld<ParametersType = any> extends World<ParametersType> {
 
     private products: Array<Product>;
-    private selectedProduct: Product | undefined;
+    private storedProduct: Product | undefined;
     private searchTerm: string;
 
     constructor(options: World<ParametersType>) {
         super(options);
         this.products = [];
-        this.selectedProduct = undefined;
+        this.storedProduct = undefined;
         this.searchTerm = "";
     }
 
-    getProducts(): Array<Product> {
-        return this.products;
-    }
-    getProductByName(productName: string): Product | undefined {
-        return this.products.find((item) => item.productName === productName);
-    }
-
-    getFilteredProducts(filter: string): Array<Product> {
+    getStoredProducts(filter?: string): Array<Product> {
         if (filter === Filter.PlentyInStock) {
             return this.products.filter((item) => item.unitsInStock >= SHORTAGE_THRESHOLD);
         } else if (filter === Filter.Shortage) {
@@ -36,30 +29,31 @@ export default class CustomWorld<ParametersType = any> extends World<ParametersT
         }
     }
 
-    getSearchTerm(): string {
+    getStoredSearchTerm(): string {
         return this.searchTerm;
     }
-    getSelectedProduct(): Product | undefined {
-        return this.selectedProduct;
+
+    getStoredProduct(): Product | undefined {
+        return this.storedProduct;
     }
 
-    removeProduct(productName: string) {
+    removeProductFromStorage(productName: string) {
         const removedProductIndex = this.products.findIndex((item) => item.productName === productName);
         this.products.splice(removedProductIndex, 1);
     }
 
-    orderProduct(productName: string) {
-        const orderedProduct = this.products.find((item) => item.productName === productName);
-        if (orderedProduct) {
-            orderedProduct.unitsInStock +=10;
+    orderStoredProduct() {
+        if (this.storedProduct) {
+            this.storedProduct.unitsInStock +=10;
         }
     }
 
-    setSearchTerm(searchTerm: string) {
+    storeSearchTerm(searchTerm: string) {
         this.searchTerm = searchTerm;
     }
-    setSelectedProduct(productName: string) {
-        this.selectedProduct = this.products.find((item) => item.productName === productName)
+
+    storeProduct(product: Product) {
+        this.storedProduct = product;
     }
 
     storeProducts(products: Array<Product>) {
