@@ -71,25 +71,13 @@ Then ('Verify product {string} is not in {string} list', async function(productN
 });
 
 Then ('Verify product {string} is not in any list', {timeout: 90000}, async function(productName: string): Promise<void> {
-    await ProductListPage.selectTab(Filter.All);
-    await browser.takeScreenshot();
-    let actualProducts = await ProductListPage.getProductList();
-    common.assertion.expectFalse(actualProducts.some((item) => item.productName === productName));
-    
-    await ProductListPage.selectTab(Filter.PlentyInStock);
-    await browser.takeScreenshot();
-    actualProducts = await ProductListPage.getProductList();
-    common.assertion.expectFalse(actualProducts.some((item) => item.productName === productName));
-    
-    await ProductListPage.selectTab(Filter.Shortage);
-    await browser.takeScreenshot();
-    actualProducts = await ProductListPage.getProductList();
-    common.assertion.expectFalse(actualProducts.some((item) => item.productName === productName));
-    
-    await ProductListPage.selectTab(Filter.OutOfStock);
-    await browser.takeScreenshot();
-    actualProducts = await ProductListPage.getProductList();
-    common.assertion.expectFalse(actualProducts.some((item) => item.productName === productName));
+    const filterOptions = Object.values(Filter).slice();
+    for (let i = 0; i < filterOptions.length; i++) {
+        await ProductListPage.selectTab(filterOptions[i]);
+        await browser.takeScreenshot();
+        let actualProducts = await ProductListPage.getProductList();
+        common.assertion.expectFalse(actualProducts.some((item) => item.productName === productName));
+    }
 });
 
 Then ('Verify Units in Stock for product {string}', async function(productName: string): Promise<void> {
@@ -98,14 +86,11 @@ Then ('Verify Units in Stock for product {string}', async function(productName: 
 });
 
 Then ('Verify item counts for all lists', async function() {
-    common.assertion.expectEqual(this.getStoredProducts().length, 
-        await ProductListPage.getTabFilterCount(Filter.All));
-    common.assertion.expectEqual(this.getStoredProducts(Filter.PlentyInStock).length, 
-        await ProductListPage.getTabFilterCount(Filter.PlentyInStock));
-    common.assertion.expectEqual(this.getStoredProducts(Filter.Shortage).length, 
-        await ProductListPage.getTabFilterCount(Filter.Shortage));
-    common.assertion.expectEqual(this.getStoredProducts(Filter.OutOfStock).length, 
-        await ProductListPage.getTabFilterCount(Filter.OutOfStock));
+    const filterOptions = Object.values(Filter).slice();
+    for (let i = 0; i < filterOptions.length; i++) {
+        common.assertion.expectEqual(this.getStoredProducts(filterOptions[i]).length, 
+        await ProductListPage.getTabFilterCount(filterOptions[i]));
+    }
     await browser.takeScreenshot();
 });
 
