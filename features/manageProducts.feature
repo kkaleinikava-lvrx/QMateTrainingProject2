@@ -37,7 +37,6 @@ Feature: The Manage Products Fiori app
     And Verify product "<product_name>" is not in "Plenty in Stock" list
     And Verify product "<product_name>" is not in "Shortage" list
     And Verify product "<product_name>" is not in "Out of Stock" list
-
         
     Examples:
       | product_name                 | list_name       |
