@@ -5,6 +5,7 @@ import ProductListPage from '../pageobjects/productListPage.ts';
 import ProductPage from '../pageobjects/productPage.ts';
 import { Product } from "../support/product.ts";
 import { Filter } from '../support/filter.ts';
+import productListPage from '../pageobjects/productListPage.ts';
 
 setWorldConstructor(CustomWorld);
 
@@ -23,31 +24,27 @@ When ('Select product {string}', async function(productName: string): Promise<vo
 
 When ('Order product {string}', async function(productName: string): Promise<void> {
     this.storeProduct(await ProductListPage.getProductDetails(productName));
-    
     await ProductListPage.clickCheckboxForProduct(productName);
     await browser.takeScreenshot();
     await ProductListPage.orderProduct();
     await browser.takeScreenshot();
-
-    this.orderStoredProduct();
 });
 
 When ('Remove product {string}', async function(productName: string): Promise<void> {
-    this.storeProducts(await ProductListPage.getProductList());
+    const filterOptions = Object.values(Filter).slice();
+    for (let i = 0; i < filterOptions.length; i++) {
+        this.storeFilterCount(filterOptions[i], await productListPage.getTabFilterCount(filterOptions[i]));
+    }
     await ProductListPage.clickCheckboxForProduct(productName);
     await browser.takeScreenshot();
     await ProductListPage.removeProduct();
     await browser.takeScreenshot();
-
-    this.removeProductFromStorage(productName);
 });
 
 When ('Search for {string}', async function(searchTerm: string): Promise<void> {
     this.storeProducts(await ProductListPage.getProductList());
     await ProductListPage.searchForProduct(searchTerm);
     await browser.takeScreenshot();
-
-    this.storeSearchTerm(searchTerm);
 });
 
 Then ('Verify product details match data from product list', async function(): Promise<void> {
@@ -70,33 +67,21 @@ Then ('Verify product {string} is not in {string} list', async function(productN
     common.assertion.expectFalse(actualProducts.some((item) => item.productName === productName));  
 });
 
-Then ('Verify product {string} is not in any list', {timeout: 90000}, async function(productName: string): Promise<void> {
-    const filterOptions = Object.values(Filter).slice();
-    for (let i = 0; i < filterOptions.length; i++) {
-        await ProductListPage.selectTab(filterOptions[i]);
-        await browser.takeScreenshot();
-        let actualProducts = await ProductListPage.getProductList();
-        common.assertion.expectFalse(actualProducts.some((item) => item.productName === productName));
-    }
+Then ('Verify Units in Stock for product {string} increased by {int}', 
+    async function(productName: string, addedQuantity: number): Promise<void> {
+        common.assertion.expectEqual(this.getStoredProduct().unitsInStock + addedQuantity, 
+            (await ProductListPage.getProductDetails(productName)).unitsInStock);
 });
 
-Then ('Verify Units in Stock for product {string}', async function(productName: string): Promise<void> {
-    common.assertion.expectEqual(this.getStoredProduct().unitsInStock, 
-        (await ProductListPage.getProductDetails(productName)).unitsInStock);
+Then ('Verify item count decreased by {int} for {string} list', 
+    async function(quantity: number, list_name: string) {
+        common.assertion.expectEqual(this.getStoredFilterCount(list_name) - quantity, 
+            await ProductListPage.getTabFilterCount(list_name));
 });
 
-Then ('Verify item counts for all lists', async function() {
-    const filterOptions = Object.values(Filter).slice();
-    for (let i = 0; i < filterOptions.length; i++) {
-        common.assertion.expectEqual(this.getStoredProducts(filterOptions[i]).length, 
-        await ProductListPage.getTabFilterCount(filterOptions[i]));
-    }
-    await browser.takeScreenshot();
-});
-
-Then ('Verify search results', async function(): Promise<void> {
-    const searchTerm = this.getStoredSearchTerm();
-    const expectedProducts = (this.getStoredProducts() as Array<Product>).filter((item) => item.productName.includes(searchTerm));
+Then ('Verify search results for {string}', async function(searchTerm: string): Promise<void> {
+    const expectedProducts = (this.getStoredProducts() as Array<Product>).filter(
+        (item) => item.productName.includes(searchTerm));
     const actualProducts = await ProductListPage.getProductList();
     common.assertion.expectEqual(expectedProducts, actualProducts);
     await browser.takeScreenshot(); 

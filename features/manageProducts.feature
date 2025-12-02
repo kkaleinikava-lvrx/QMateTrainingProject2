@@ -31,9 +31,9 @@ Feature: The Manage Products Fiori app
   
     Given Open Manage Product app
     When Remove product "<product_name>"
-    Then Verify item count decreased by 1 for "All Products" list
+    Then Verify item count decreased by 1 for "Products" list
     And Verify item count decreased by 1 for "<list_name>" list
-    And Verify product "<product_name>" is not in "All Products" list
+    And Verify product "<product_name>" is not in "Products" list
     And Verify product "<product_name>" is not in "Plenty in Stock" list
     And Verify product "<product_name>" is not in "Shortage" list
     And Verify product "<product_name>" is not in "Out of Stock" list

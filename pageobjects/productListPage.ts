@@ -169,7 +169,6 @@ class ProductListPage extends BasePage {
         for(let i = 0; i < rowCount; i++) {
             productList.push({
                 productName: await ui5.element.getPropertyValue(ProductListPage.PRODUCT_NAME_SELECTOR, "text", i),
-                unitsInStock: parseInt(await ui5.element.getPropertyValue(ProductListPage.UNITS_IN_STOCK_SELECTOR, "number", i))
             });
         }
         return productList;
@@ -177,12 +176,13 @@ class ProductListPage extends BasePage {
 
     async getProductDetails(productName: string): Promise<Product> {
         const productNameSelector = this.getProductNameSelector(productName);
-        const supplierNameSelector = {...(this.getProductNameSiblingSelector(productName) as object), 
-            ...ProductListPage.SUPPLIER_SELECTOR} as QmateSelector;
-        const priceSelector = {...(this.getProductNameSiblingSelector(productName) as object), 
-            ...ProductListPage.PRICE_SELECTOR} as QmateSelector;
-        const unitsInStockSelector = {...(this.getProductNameSiblingSelector(productName) as object), 
-            ...ProductListPage.UNITS_IN_STOCK_SELECTOR} as QmateSelector;
+        const titleSiblingSelector = this.getProductNameSiblingSelector(productName) as object;
+        const supplierNameSelector = {
+            ...titleSiblingSelector, ...ProductListPage.SUPPLIER_SELECTOR} as QmateSelector;
+        const priceSelector = {
+            ...titleSiblingSelector, ...ProductListPage.PRICE_SELECTOR} as QmateSelector;
+        const unitsInStockSelector = {
+            ...titleSiblingSelector, ...ProductListPage.UNITS_IN_STOCK_SELECTOR} as QmateSelector;
         
         return {
                 productName: await ui5.element.getPropertyValue(productNameSelector, "title"),
@@ -204,9 +204,10 @@ class ProductListPage extends BasePage {
         await this.clickRemoveButton();
         await ui5.assertion.expectMessageToastTextToBe("Product removed");
     }
-    
+
     async searchForProduct(searchText: string): Promise<void> {
         await ui5.userInteraction.searchFor(ProductListPage.SERACH_FIELD_SELECTOR, searchText);
+        await common.userInteraction.pressEnter();
     }
 
     async selectTab(filterName: string) {
