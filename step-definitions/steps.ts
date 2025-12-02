@@ -20,7 +20,7 @@ When ('Collect details for product {string} from product list', async function(p
 });
 
 When ('Select product {string}', async function(productName: string): Promise<void> {
-    await ProductListPage.clickRowForProduct(productName);
+    await ProductListPage.clickProduct(productName);
     await ProductPage.waitForPageLoaded();    
     await browser.takeScreenshot();    
 });
@@ -50,8 +50,8 @@ When ('Search for {string}', async function(searchTerm: string): Promise<void> {
 });
 
 Then ('Verify product details match data from product list', async function(): Promise<void> {
-    const expectedProduct = this.getStoredProduct();
     const actualProduct = await ProductPage.getProductDetails();
+    const expectedProduct = this.getStoredProduct(actualProduct.productName);
     common.assertion.expectEqual(expectedProduct, actualProduct);
 });
 
@@ -71,7 +71,7 @@ Then ('Verify product {string} is not in {string} list', async function(productN
 
 Then ('Verify Units in Stock for product {string} increased by {int}', 
     async function(productName: string, addedQuantity: number): Promise<void> {
-        common.assertion.expectEqual(this.getStoredProduct().unitsInStock + addedQuantity, 
+        common.assertion.expectEqual(this.getStoredProduct(productName).unitsInStock + addedQuantity, 
             (await ProductListPage.getProductDetails(productName)).unitsInStock);
 });
 

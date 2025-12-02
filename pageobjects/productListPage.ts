@@ -80,10 +80,11 @@ class ProductListPage extends BasePage {
         }
     }
 
-    private static readonly WORKLIST_TOOLBAR = {
+    private static readonly TABLE_SELECTOR = {
         "elementProperties": {
             "viewName": "mycompany.myapp.MyWorklistApp.view.Worklist",
-            "metadata": "sap.m.Toolbar"
+            "metadata": "sap.m.Table",
+            "id": "*table"
         }
     }
 
@@ -147,7 +148,7 @@ class ProductListPage extends BasePage {
         await ui5.userInteraction.click(ProductListPage.REMOVE_BUTTON_SELECTOR);
     }
     
-    async clickRowForProduct(productName: string): Promise<void> {
+    async clickProduct(productName: string): Promise<void> {
         await ui5.userInteraction.clickListItem(this.getListItemSelector(productName));
     }
 
@@ -215,7 +216,7 @@ class ProductListPage extends BasePage {
     }
 
     async waitForPageLoaded(): Promise<void> {
-        await ui5.element.waitForAll(ProductListPage.WORKLIST_TOOLBAR);
+        await ui5.element.waitForAll(ProductListPage.TABLE_SELECTOR);
     }
 }
 

@@ -4,13 +4,11 @@ import { Product } from "../support/product.ts";
 export default class CustomWorld<ParametersType = any> extends World<ParametersType> {
 
     private products: Array<Product>;
-    private storedProduct: Product | undefined;
     private counts: Map<string, number>
 
     constructor(options: World<ParametersType>) {
         super(options);
         this.products = [];
-        this.storedProduct = undefined;
         this.counts = new Map<string, number>();
     }
 
@@ -18,8 +16,8 @@ export default class CustomWorld<ParametersType = any> extends World<ParametersT
         return this.counts.get(filterName);
     }
 
-    getStoredProduct(): Product | undefined {
-        return this.storedProduct;
+    getStoredProduct(productName: string): Product | undefined {
+        return this.products.find((item) => item.productName === productName);
     }
     
     getStoredProducts(): Array<Product> {
@@ -31,7 +29,13 @@ export default class CustomWorld<ParametersType = any> extends World<ParametersT
     }
 
     storeProduct(product: Product) {
-        this.storedProduct = product;
+        const index = this.products.findIndex(
+            (item) => item.productName === product.productName);
+        if (index >= 0) {
+            Object.assign(this.products[index], product);
+        } else {
+            this.products.push(product);
+        }        
     }
 
     storeProducts(products: Array<Product>) {
