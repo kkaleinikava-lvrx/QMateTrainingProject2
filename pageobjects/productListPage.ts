@@ -194,7 +194,8 @@ class ProductListPage extends BasePage {
     }
 
     async openPage(): Promise<void> {
-        await browser.url('/test-resources/sap/m/demokit/tutorial/worklist/07/webapp/test/mockServer.html');
+        await common.navigation.navigateToUrl(await util.browser.getBaseUrl() + 
+            '/test-resources/sap/m/demokit/tutorial/worklist/07/webapp/test/mockServer.html');
     }
 
     async orderProduct(): Promise<void> {
