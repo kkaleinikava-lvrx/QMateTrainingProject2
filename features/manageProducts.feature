@@ -4,7 +4,8 @@ Feature: The Manage Products Fiori app
   Verify that product information displayed on the home page matches the corresponding information on the product details page.
 
     Given Open Manage Product app
-    When Select product "<product_name>"
+    When Collect details for product "<product_name>" from product list
+    And Select product "<product_name>"
     Then Verify product details match data from product list
 
     Examples:
@@ -16,7 +17,8 @@ Feature: The Manage Products Fiori app
   Verify that after ordering a product, its state is updated correctly in the application.
   
     Given Open Manage Product app
-    When Order product "<product_name>"
+    When Collect details for product "<product_name>" from product list
+    And Order product "<product_name>"
     Then Verify Units in Stock for product "<product_name>" increased by 10
     And Verify product "<product_name>" is not in "Shortage" list
     And Verify product "<product_name>" is in "Plenty in Stock" list

@@ -15,15 +15,17 @@ Given ('Open Manage Product app', async function(): Promise<void> {
     await browser.takeScreenshot();
 });
 
+When ('Collect details for product {string} from product list', async function(productName: string): Promise<void> {
+    this.storeProduct(await ProductListPage.getProductDetails(productName)); 
+});
+
 When ('Select product {string}', async function(productName: string): Promise<void> {
-    this.storeProduct(await ProductListPage.getProductDetails(productName));
     await ProductListPage.clickRowForProduct(productName);
     await ProductPage.waitForPageLoaded();    
     await browser.takeScreenshot();    
 });
 
 When ('Order product {string}', async function(productName: string): Promise<void> {
-    this.storeProduct(await ProductListPage.getProductDetails(productName));
     await ProductListPage.clickCheckboxForProduct(productName);
     await browser.takeScreenshot();
     await ProductListPage.orderProduct();
