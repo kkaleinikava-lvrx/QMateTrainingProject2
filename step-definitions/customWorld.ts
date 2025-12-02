@@ -1,6 +1,5 @@
 import { World } from "@wdio/cucumber-framework";
 import { Product } from "../support/product.ts";
-import { Filter } from "../support/filter.ts";
 
 export default class CustomWorld<ParametersType = any> extends World<ParametersType> {
 
