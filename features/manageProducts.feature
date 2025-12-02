@@ -17,7 +17,7 @@ Feature: The Manage Products Fiori app
   
     Given Open Manage Product app
     When Order product "<product_name>"
-    Then Verify Units in Stock for product "<product_name>"
+    Then Verify Units in Stock for product "<product_name>" increased by 10
     And Verify product "<product_name>" is not in "Shortage" list
     And Verify product "<product_name>" is in "Plenty in Stock" list
 
@@ -31,20 +31,24 @@ Feature: The Manage Products Fiori app
   
     Given Open Manage Product app
     When Remove product "<product_name>"
-    Then Verify item counts for all lists
-    And Verify product "<product_name>" is not in any list
+    Then Verify item counts decreased by 1 for All Products and "<list_name>" lists
+    And Verify product "<product_name>" is not in "All Products" list
+    And Verify product "<product_name>" is not in "Plenty in Stock" list
+    And Verify product "<product_name>" is not in "Shortage" list
+    And Verify product "<product_name>" is not in "Out of Stock" list
+
         
     Examples:
-      | product_name                 |
-      | Schwarzwälder Kirschtorte    |
-      | Alice Mutton                 |
+      | product_name                 | list_name       |
+      | Schwarzwälder Kirschtorte    | Shortage        |
+      | Alice Mutton                 | Plenty in Stock |
 
   Scenario Outline: Product Search
   Verify that searching for a product by name via the search field filters the results correctly.
   
     Given Open Manage Product app
     When Search for "<search_term>"
-    Then Verify search results
+    Then Verify search results for "<search_term>"
         
     Examples:
       | search_term     |
