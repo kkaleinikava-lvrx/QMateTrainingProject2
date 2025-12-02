@@ -68,7 +68,7 @@ class ProductPage extends BasePage {
     }
 
     async waitForPageLoaded(): Promise<void> {
-        await ui5.element.waitForAll(ProductPage.PAGE_HEADER_SELECTOR);
+        await ui5.element.getDisplayed(ProductPage.PAGE_HEADER_SELECTOR);
     }
 }
 

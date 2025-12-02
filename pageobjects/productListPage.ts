@@ -216,7 +216,7 @@ class ProductListPage extends BasePage {
     }
 
     async waitForPageLoaded(): Promise<void> {
-        await ui5.element.waitForAll(ProductListPage.TABLE_SELECTOR);
+        await ui5.element.getDisplayed(ProductListPage.TABLE_SELECTOR);
     }
 }
 
