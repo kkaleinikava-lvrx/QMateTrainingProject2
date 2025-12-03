@@ -60,10 +60,11 @@ Then (/Verify product "(.+)" is( not)? in "(.+)" list/,
     await ProductListPage.selectTab(listName);
     await browser.takeScreenshot();
     const actualProducts = await ProductListPage.getProductList();
+    const isProductFound = actualProducts.some((item) => item.productName === productName);
     if (negation) {
-        common.assertion.expectFalse(actualProducts.some((item) => item.productName === productName));
+        common.assertion.expectFalse(isProductFound);
     } else {
-        common.assertion.expectTrue(actualProducts.some((item) => item.productName === productName));
+        common.assertion.expectTrue(isProductFound);
     }      
 });
 
