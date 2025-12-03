@@ -118,6 +118,21 @@ class ProductListPage extends BasePage {
             }
         }
     }
+    private getSupplierNameSelectorForProduct(productName:string): QmateSelector {
+        const titleSiblingSelector = this.getProductNameSiblingSelector(productName) as object;
+        return {
+            ...titleSiblingSelector, ...ProductListPage.SUPPLIER_SELECTOR} as QmateSelector;
+    }
+    private getPriceSelectorForProduct(productName:string): QmateSelector {
+        const titleSiblingSelector = this.getProductNameSiblingSelector(productName) as object;
+        return {
+            ...titleSiblingSelector, ...ProductListPage.PRICE_SELECTOR} as QmateSelector;
+    }
+    private getUnitsInStockSelectorForProduct(productName:string): QmateSelector {
+        const titleSiblingSelector = this.getProductNameSiblingSelector(productName) as object;
+        return {
+            ...titleSiblingSelector, ...ProductListPage.UNITS_IN_STOCK_SELECTOR} as QmateSelector;      
+    }
 
     private getListItemSelector(productName:string): QmateSelector {
         return {
@@ -177,14 +192,9 @@ class ProductListPage extends BasePage {
 
     async getProductDetails(productName: string): Promise<Product> {
         const productNameSelector = this.getProductNameSelector(productName);
-        const titleSiblingSelector = this.getProductNameSiblingSelector(productName) as object;
-        const supplierNameSelector = {
-            ...titleSiblingSelector, ...ProductListPage.SUPPLIER_SELECTOR} as QmateSelector;
-        const priceSelector = {
-            ...titleSiblingSelector, ...ProductListPage.PRICE_SELECTOR} as QmateSelector;
-        const unitsInStockSelector = {
-            ...titleSiblingSelector, ...ProductListPage.UNITS_IN_STOCK_SELECTOR} as QmateSelector;
-        
+        const supplierNameSelector = this.getSupplierNameSelectorForProduct(productName);
+        const priceSelector = this.getPriceSelectorForProduct(productName);
+        const unitsInStockSelector = this.getUnitsInStockSelectorForProduct(productName);
         return {
                 productName: await ui5.element.getPropertyValue(productNameSelector, "title"),
                 supplierName: await ui5.element.getPropertyValue(supplierNameSelector, "text"),
