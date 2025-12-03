@@ -44,8 +44,9 @@ class ProductPage extends BasePage {
         }
     }
 
-    async getPrice(): Promise<number> {
-        return parseFloat((await ui5.element.getPropertyValue(ProductPage.PRICE_TEXT_SELECTOR, "text")).substring(7));
+    async getPrice(): Promise<number> {        
+        return parseFloat(util.formatter.extractNumberFromString(
+            await ui5.element.getPropertyValue(ProductPage.PRICE_TEXT_SELECTOR, "text")));
     }
     async getProductName(): Promise<string> {
         return await ui5.element.getPropertyValue(ProductPage.PRODUCT_NAME_SELECTOR, "text");
