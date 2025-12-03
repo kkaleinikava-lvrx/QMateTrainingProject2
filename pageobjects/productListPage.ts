@@ -118,16 +118,19 @@ class ProductListPage extends BasePage {
             }
         }
     }
+
     private getSupplierNameSelectorForProduct(productName:string): QmateSelector {
         const titleSiblingSelector = this.getProductNameSiblingSelector(productName) as object;
         return {
             ...titleSiblingSelector, ...ProductListPage.SUPPLIER_SELECTOR} as QmateSelector;
     }
+
     private getPriceSelectorForProduct(productName:string): QmateSelector {
         const titleSiblingSelector = this.getProductNameSiblingSelector(productName) as object;
         return {
             ...titleSiblingSelector, ...ProductListPage.PRICE_SELECTOR} as QmateSelector;
     }
+
     private getUnitsInStockSelectorForProduct(productName:string): QmateSelector {
         const titleSiblingSelector = this.getProductNameSiblingSelector(productName) as object;
         return {
@@ -152,7 +155,6 @@ class ProductListPage extends BasePage {
         const checkBoxSelector = {...(this.getProductNameSiblingSelector(productName) as object), 
             ...ProductListPage.ITEM_CHECKBOX_SELECTOR} as QmateSelector;
         await ui5.userInteraction.check(checkBoxSelector);
-
     }
     
     async clickOrderButton(): Promise<void> {
@@ -212,6 +214,7 @@ class ProductListPage extends BasePage {
         await this.clickOrderButton();
         await ui5.assertion.expectMessageToastTextToBe("Product stock level updated");
     }
+    
     async removeProduct(): Promise<void> {
         await this.clickRemoveButton();
         await ui5.assertion.expectMessageToastTextToBe("Product removed");

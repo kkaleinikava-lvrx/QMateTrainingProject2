@@ -2,6 +2,7 @@ import { Product } from "../support/product.ts";
 import { BasePage } from "./basePage.ts";
 
 class ProductPage extends BasePage {
+    
     private static readonly PAGE_HEADER_SELECTOR = {
         "elementProperties": {
             "viewName": "mycompany.myapp.MyWorklistApp.view.Object",
@@ -9,6 +10,7 @@ class ProductPage extends BasePage {
             "id": "*page-pageHeader"
         }
     }
+
     private static readonly PRICE_TEXT_SELECTOR = {
         "elementProperties": {
             "viewName": "mycompany.myapp.MyWorklistApp.view.Object",
@@ -48,12 +50,15 @@ class ProductPage extends BasePage {
         return parseFloat(util.formatter.extractNumberFromString(
             await ui5.element.getPropertyValue(ProductPage.PRICE_TEXT_SELECTOR, "text")));
     }
+
     async getProductName(): Promise<string> {
         return await ui5.element.getPropertyValue(ProductPage.PRODUCT_NAME_SELECTOR, "text");
     }
+
     async getSupplierName(): Promise<string> {
         return await ui5.element.getPropertyValue(ProductPage.SUPPLIER_NAME_SELECTOR, "text");
     }
+
     async getUnitsInStock(): Promise<number> {
         return parseInt(await ui5.element.getPropertyValue(ProductPage.UNITS_IN_STOCK_SELECTOR, "number"));
     }
@@ -65,7 +70,6 @@ class ProductPage extends BasePage {
             price: await this.getPrice(),
             unitsInStock: await this.getUnitsInStock()            
         };
-
     }
 
     async waitForPageLoaded(): Promise<void> {
