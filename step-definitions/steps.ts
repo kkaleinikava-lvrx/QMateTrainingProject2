@@ -55,18 +55,16 @@ Then ('Verify product details match data from product list', async function(): P
     common.assertion.expectEqual(expectedProduct, actualProduct);
 });
 
-Then ('Verify product {string} is in {string} list', async function(productName: string, listName: string): Promise<void> {
+Then (/Verify product "(.+)" is( not)? in "(.+)" list/, 
+  async function(productName: string, negation: string, listName: string): Promise<void> {
     await ProductListPage.selectTab(listName);
     await browser.takeScreenshot();
     const actualProducts = await ProductListPage.getProductList();
-    common.assertion.expectTrue(actualProducts.some((item) => item.productName === productName));    
-});
-
-Then ('Verify product {string} is not in {string} list', async function(productName: string, listName: string): Promise<void> {
-    await ProductListPage.selectTab(listName);
-    await browser.takeScreenshot();
-    const actualProducts = await ProductListPage.getProductList();
-    common.assertion.expectFalse(actualProducts.some((item) => item.productName === productName));  
+    if (negation) {
+        common.assertion.expectFalse(actualProducts.some((item) => item.productName === productName));
+    } else {
+        common.assertion.expectTrue(actualProducts.some((item) => item.productName === productName));
+    }      
 });
 
 Then ('Verify Units in Stock for product {string} increased by {int}', 
