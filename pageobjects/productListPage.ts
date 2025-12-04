@@ -7,8 +7,10 @@ class ProductListPage extends BasePage {
     private static readonly ITEM_CHECKBOX_SELECTOR = {
         "elementProperties": {
             "viewName": "mycompany.myapp.MyWorklistApp.view.Worklist",
-            "metadata": "sap.m.CheckBox",
-            "id": "*item*"
+            "metadata": "sap.m.CheckBox"
+        },
+        "ancestorProperties": {
+            "metadata": "sap.m.ColumnListItem"
         }
     }
 
@@ -108,16 +110,6 @@ class ProductListPage extends BasePage {
         }
     }
 
-    private getProductNameSelector(productName:string): QmateSelector {
-        return {
-            "elementProperties": {
-                "viewName": "mycompany.myapp.MyWorklistApp.view.Worklist",
-                "metadata": "sap.m.ObjectIdentifier",
-                "title": productName
-            }
-        }
-    }
-
     private getSupplierNameSelectorForProduct(productName:string): QmateSelector {
         const titleSiblingSelector = this.getProductNameSiblingSelector(productName) as object;
         return {
@@ -184,12 +176,11 @@ class ProductListPage extends BasePage {
     }
 
     async getProductDetails(productName: string): Promise<Product> {
-        const productNameSelector = this.getProductNameSelector(productName);
         const supplierNameSelector = this.getSupplierNameSelectorForProduct(productName);
         const priceElement = await ui5.element.getDisplayed(this.getPriceSelectorForProduct(productName));
         const unitsInStockSelector = this.getUnitsInStockSelectorForProduct(productName);
         return {
-                productName: await ui5.element.getPropertyValue(productNameSelector, "title"),
+                productName: productName,
                 supplierName: await ui5.element.getPropertyValue(supplierNameSelector, "text"),
                 price: await ui5.control.getProperty(priceElement, "number") + " " +
                     await ui5.control.getProperty(priceElement, "unit"),
