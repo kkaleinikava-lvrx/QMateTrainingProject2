@@ -47,9 +47,7 @@ When ('Search for {string}', async function(searchTerm: string): Promise<void> {
 });
 
 Then ('Verify product details match data from product list', async function(): Promise<void> {
-    const actualProduct = await ProductPage.getProductDetails();
-    const expectedProduct = this.getStoredProduct(actualProduct.productName);
-    common.assertion.expectEqual(expectedProduct, actualProduct);
+    common.assertion.expectEqual(this.getStoredProduct(), await ProductPage.getProductDetails());
 });
 
 Then (/Verify product "(.+)" is( not)? in "(.+)" list/, 
@@ -67,7 +65,7 @@ Then (/Verify product "(.+)" is( not)? in "(.+)" list/,
 
 Then ('Verify Units in Stock for product {string} increased by {int}', 
     async function(productName: string, addedQuantity: number): Promise<void> {
-        common.assertion.expectEqual(this.getStoredProduct(productName).unitsInStock + addedQuantity, 
+        common.assertion.expectEqual(this.getStoredProduct().unitsInStock + addedQuantity, 
             (await ProductListPage.getProductDetails(productName)).unitsInStock);
 });
 
