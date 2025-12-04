@@ -49,7 +49,7 @@ class ProductListPage extends BasePage {
         }
     }
 
-    private static readonly SERACH_FIELD_SELECTOR = {
+    private static readonly SEARCH_FIELD_SELECTOR = {
         "elementProperties": {
             "viewName": "mycompany.myapp.MyWorklistApp.view.Worklist",
             "metadata": "sap.m.SearchField",
@@ -204,7 +204,7 @@ class ProductListPage extends BasePage {
     }
 
     async searchForProduct(searchText: string): Promise<void> {
-        await ui5.userInteraction.searchFor(ProductListPage.SERACH_FIELD_SELECTOR, searchText);
+        await ui5.userInteraction.searchFor(ProductListPage.SEARCH_FIELD_SELECTOR, searchText);
     }
 
     async selectTab(filterName: string) {
