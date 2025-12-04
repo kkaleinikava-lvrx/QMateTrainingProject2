@@ -1,8 +1,9 @@
 import { Product } from "../support/product.ts";
 import { BasePage } from "./basePage.ts";
+import { Formatter } from "../support/formatter.ts";
 
 class ProductPage extends BasePage {
-    
+
     private static readonly PAGE_HEADER_SELECTOR = {
         "elementProperties": {
             "viewName": "mycompany.myapp.MyWorklistApp.view.Object",
@@ -46,9 +47,9 @@ class ProductPage extends BasePage {
         }
     }
 
-    async getPrice(): Promise<number> {        
-        return parseFloat(util.formatter.extractNumberFromString(
-            await ui5.element.getPropertyValue(ProductPage.PRICE_TEXT_SELECTOR, "text")));
+    async getPrice(): Promise<string> {        
+        return Formatter.extractNumberFromString(
+            await ui5.element.getPropertyValue(ProductPage.PRICE_TEXT_SELECTOR, "text"));
     }
 
     async getProductName(): Promise<string> {

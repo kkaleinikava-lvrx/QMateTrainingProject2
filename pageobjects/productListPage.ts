@@ -200,7 +200,7 @@ class ProductListPage extends BasePage {
         return {
                 productName: await ui5.element.getPropertyValue(productNameSelector, "title"),
                 supplierName: await ui5.element.getPropertyValue(supplierNameSelector, "text"),
-                price: parseFloat(await ui5.element.getPropertyValue(priceSelector, "number")),
+                price: await ui5.element.getPropertyValue(priceSelector, "number"),
                 unitsInStock: parseInt(await ui5.element.getPropertyValue(unitsInStockSelector, "number"))
         }
     }
@@ -214,7 +214,7 @@ class ProductListPage extends BasePage {
         await this.clickOrderButton();
         await ui5.assertion.expectMessageToastTextToBe("Product stock level updated");
     }
-    
+
     async removeProduct(): Promise<void> {
         await this.clickRemoveButton();
         await ui5.assertion.expectMessageToastTextToBe("Product removed");
