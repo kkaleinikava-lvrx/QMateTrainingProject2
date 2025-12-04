@@ -33,7 +33,7 @@ When ('Order product {string}', async function(productName: string): Promise<voi
 });
 
 When ('Remove product {string}', async function(productName: string): Promise<void> {
-    const filterOptions = Object.values(Filter).slice();
+    const filterOptions = Object.values(Filter);
     for (let i = 0; i < filterOptions.length; i++) {
         this.storeFilterCount(filterOptions[i], await productListPage.getTabFilterCount(filterOptions[i]));
     }
@@ -75,9 +75,9 @@ Then ('Verify Units in Stock for product {string} increased by {int}',
 });
 
 Then ('Verify item count decreased by {int} for {string} list', 
-    async function(quantity: number, list_name: string) {
-        common.assertion.expectEqual(this.getStoredFilterCount(list_name) - quantity, 
-            await ProductListPage.getTabFilterCount(list_name));
+    async function(quantity: number, listName: string) {
+        common.assertion.expectEqual(this.getStoredFilterCount(listName) - quantity, 
+            await ProductListPage.getTabFilterCount(listName));
 });
 
 Then ('Verify search results for {string}', async function(searchTerm: string): Promise<void> {

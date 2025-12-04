@@ -1,5 +1,6 @@
 import { World } from "@wdio/cucumber-framework";
 import { Product } from "../support/product.ts";
+import { Filter } from "../support/filter.ts";
 
 export default class CustomWorld<ParametersType = any> extends World<ParametersType> {
 
@@ -12,7 +13,7 @@ export default class CustomWorld<ParametersType = any> extends World<ParametersT
         this.counts = new Map<string, number>();
     }
 
-    getStoredFilterCount(filterName: string): number | undefined {
+    getStoredFilterCount(filterName: Filter): number | undefined {
         return this.counts.get(filterName);
     }
 
@@ -24,10 +25,10 @@ export default class CustomWorld<ParametersType = any> extends World<ParametersT
         return this.products;
     }
 
-    storeFilterCount(filterName: string, count: number) {
+    storeFilterCount(filterName: Filter, count: number) {
         this.counts.set(filterName, count);
     }
-
+    
     storeProduct(product: Product) {
         const index = this.products.findIndex(
             (item) => item.productName === product.productName);
