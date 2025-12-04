@@ -4,12 +4,12 @@ import { Filter } from "../support/filter.ts";
 
 export default class CustomWorld<ParametersType = any> extends World<ParametersType> {
 
-    private products: Array<Product>;
+    private product: Product | undefined;
     private counts: Map<string, number>
 
     constructor(options: World<ParametersType>) {
         super(options);
-        this.products = [];
+        this.product = undefined;
         this.counts = new Map<string, number>();
     }
 
@@ -17,29 +17,15 @@ export default class CustomWorld<ParametersType = any> extends World<ParametersT
         return this.counts.get(filterName);
     }
 
-    getStoredProduct(productName: string): Product | undefined {
-        return this.products.find((item) => item.productName === productName);
+    getStoredProduct(): Product | undefined {
+        return this.product;
     }
     
-    getStoredProducts(): Array<Product> {
-        return this.products;
-    }
-
     storeFilterCount(filterName: Filter, count: number) {
         this.counts.set(filterName, count);
     }
     
     storeProduct(product: Product) {
-        const index = this.products.findIndex(
-            (item) => item.productName === product.productName);
-        if (index >= 0) {
-            Object.assign(this.products[index], product);
-        } else {
-            this.products.push(product);
-        }        
-    }
-
-    storeProducts(products: Array<Product>) {
-        this.products = products;
+        this.product = product;
     }
 }

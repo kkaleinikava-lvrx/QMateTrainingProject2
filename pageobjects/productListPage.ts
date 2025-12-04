@@ -1,4 +1,4 @@
-import { QmateSelector, Ui5Selector } from "wdio-qmate-service/modules/ui5/types/ui5.types";
+import { QmateSelector } from "wdio-qmate-service/modules/ui5/types/ui5.types";
 import { BasePage } from "./basePage.ts";
 import { Product } from "../support/product.ts";
 
@@ -35,8 +35,7 @@ class ProductListPage extends BasePage {
     private static readonly PRODUCT_NAME_SELECTOR = {
         "elementProperties": {
             "viewName": "mycompany.myapp.MyWorklistApp.view.Worklist",
-            "metadata": "sap.m.Text",
-            "id": "__identifier0-*-txt"
+            "metadata": "sap.m.ObjectIdentifier"
         }
     }
 
@@ -173,23 +172,15 @@ class ProductListPage extends BasePage {
         return parseInt(await ui5.element.getPropertyValue(this.getTabFilterSelector(filterName), "count"));
     }
 
-    async getRowCount(): Promise<number> {
+    async getProductNames(): Promise<Array<string>> {
+        const names = [];
         if (await ui5.element.isVisible(ProductListPage.PRODUCT_NAME_SELECTOR)) {
-            return (await ui5.element.getAllDisplayed(ProductListPage.PRODUCT_NAME_SELECTOR)).length;
-        } else {
-            return 0;
+            const elements = await ui5.element.getAllDisplayed(ProductListPage.PRODUCT_NAME_SELECTOR);
+            for (const element of elements) {
+                names.push(await ui5.control.getProperty(element, "title"));
+            }
         }
-    }
-
-    async getProductList(): Promise<Array<Product>> {
-        const productList: Array<Product> = [];
-        const rowCount = await this.getRowCount();
-        for(let i = 0; i < rowCount; i++) {
-            productList.push({
-                productName: await ui5.element.getPropertyValue(ProductListPage.PRODUCT_NAME_SELECTOR, "text", i),
-            });
-        }
-        return productList;
+        return names;
     }
 
     async getProductDetails(productName: string): Promise<Product> {
@@ -222,7 +213,6 @@ class ProductListPage extends BasePage {
 
     async searchForProduct(searchText: string): Promise<void> {
         await ui5.userInteraction.searchFor(ProductListPage.SERACH_FIELD_SELECTOR, searchText);
-        await common.userInteraction.pressEnter();
     }
 
     async selectTab(filterName: string) {

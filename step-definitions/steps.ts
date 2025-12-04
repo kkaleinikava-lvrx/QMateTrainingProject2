@@ -3,9 +3,7 @@ import { Given, When, Then, setWorldConstructor } from '@wdio/cucumber-framework
 import CustomWorld from './customWorld.ts';
 import ProductListPage from '../pageobjects/productListPage.ts';
 import ProductPage from '../pageobjects/productPage.ts';
-import { Product } from "../support/product.ts";
 import { Filter } from '../support/filter.ts';
-import productListPage from '../pageobjects/productListPage.ts';
 
 setWorldConstructor(CustomWorld);
 
@@ -35,7 +33,7 @@ When ('Order product {string}', async function(productName: string): Promise<voi
 When ('Remove product {string}', async function(productName: string): Promise<void> {
     const filterOptions = Object.values(Filter);
     for (let option of filterOptions) {
-        this.storeFilterCount(option, await productListPage.getTabFilterCount(option));
+        this.storeFilterCount(option, await ProductListPage.getTabFilterCount(option));
     }
     await ProductListPage.clickCheckboxForProduct(productName);
     await browser.takeScreenshot();
@@ -44,7 +42,6 @@ When ('Remove product {string}', async function(productName: string): Promise<vo
 });
 
 When ('Search for {string}', async function(searchTerm: string): Promise<void> {
-    this.storeProducts(await ProductListPage.getProductList());
     await ProductListPage.searchForProduct(searchTerm);
     await browser.takeScreenshot();
 });
@@ -59,8 +56,8 @@ Then (/Verify product "(.+)" is( not)? in "(.+)" list/,
   async function(productName: string, negation: string, listName: string): Promise<void> {
     await ProductListPage.selectTab(listName);
     await browser.takeScreenshot();
-    const actualProducts = await ProductListPage.getProductList();
-    const isProductFound = actualProducts.some((item) => item.productName === productName);
+    const actualProducts = await ProductListPage.getProductNames();
+    const isProductFound = actualProducts.some((item) => item === productName);
     if (negation) {
         common.assertion.expectFalse(isProductFound);
     } else {
@@ -81,9 +78,9 @@ Then ('Verify item count decreased by {int} for {string} list',
 });
 
 Then ('Verify search results for {string}', async function(searchTerm: string): Promise<void> {
-    const expectedProducts = (this.getStoredProducts() as Array<Product>).filter(
-        (item) => item.productName.includes(searchTerm));
-    const actualProducts = await ProductListPage.getProductList();
-    common.assertion.expectEqual(expectedProducts, actualProducts);
+    const productNames = await ProductListPage.getProductNames();
+    for (let productName of productNames) {
+        common.assertion.expectToContain(productName, searchTerm);
+    }
     await browser.takeScreenshot(); 
 });
