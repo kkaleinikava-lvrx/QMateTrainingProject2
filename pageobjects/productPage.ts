@@ -1,6 +1,5 @@
 import { Product } from "../support/product.ts";
 import { BasePage } from "./basePage.ts";
-import { Formatter } from "../support/formatter.ts";
 
 class ProductPage extends BasePage {
 
@@ -15,8 +14,8 @@ class ProductPage extends BasePage {
     private static readonly PRICE_TEXT_SELECTOR = {
         "elementProperties": {
             "viewName": "mycompany.myapp.MyWorklistApp.view.Object",
-            "metadata": "sap.m.Text",
-            "text": "Price: *"
+            "metadata": "sap.m.ObjectAttribute",
+            "title": "Price"
         }
     }
 
@@ -48,8 +47,7 @@ class ProductPage extends BasePage {
     }
 
     async getPrice(): Promise<string> {        
-        return Formatter.extractNumberFromString(
-            await ui5.element.getPropertyValue(ProductPage.PRICE_TEXT_SELECTOR, "text"));
+        return await ui5.element.getPropertyValue(ProductPage.PRICE_TEXT_SELECTOR, "text");
     }
 
     async getProductName(): Promise<string> {
