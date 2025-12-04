@@ -34,8 +34,8 @@ When ('Order product {string}', async function(productName: string): Promise<voi
 
 When ('Remove product {string}', async function(productName: string): Promise<void> {
     const filterOptions = Object.values(Filter);
-    for (let i = 0; i < filterOptions.length; i++) {
-        this.storeFilterCount(filterOptions[i], await productListPage.getTabFilterCount(filterOptions[i]));
+    for (let option of filterOptions) {
+        this.storeFilterCount(option, await productListPage.getTabFilterCount(option));
     }
     await ProductListPage.clickCheckboxForProduct(productName);
     await browser.takeScreenshot();
