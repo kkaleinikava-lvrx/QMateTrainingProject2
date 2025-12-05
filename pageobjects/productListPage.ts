@@ -177,13 +177,13 @@ class ProductListPage extends BasePage {
 
     async getProductDetails(productName: string): Promise<Product> {
         const supplierNameSelector = this.getSupplierNameSelectorForProduct(productName);
-        const priceElement = await ui5.element.getDisplayed(this.getPriceSelectorForProduct(productName));
+        const priceSelector = this.getPriceSelectorForProduct(productName);
         const unitsInStockSelector = this.getUnitsInStockSelectorForProduct(productName);
         return {
                 productName: productName,
                 supplierName: await ui5.element.getPropertyValue(supplierNameSelector, "text"),
-                price: await ui5.control.getProperty(priceElement, "number") + " " +
-                    await ui5.control.getProperty(priceElement, "unit"),
+                price: await ui5.element.getPropertyValue(priceSelector, "number") + " " +
+                    await ui5.element.getPropertyValue(priceSelector, "unit"),
                 unitsInStock: parseInt(await ui5.element.getPropertyValue(unitsInStockSelector, "number"))
         }
     }
