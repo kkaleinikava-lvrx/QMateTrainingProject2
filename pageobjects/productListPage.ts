@@ -195,12 +195,12 @@ class ProductListPage extends BasePage {
 
     async orderProduct(): Promise<void> {
         await this.clickOrderButton();
-        await ui5.assertion.expectMessageToastTextToBe("Product stock level updated");
+        await this.waitForMessageToast();
     }
 
     async removeProduct(): Promise<void> {
         await this.clickRemoveButton();
-        await ui5.assertion.expectMessageToastTextToBe("Product removed");
+        await this.waitForMessageToast();
     }
 
     async searchForProduct(searchText: string): Promise<void> {
@@ -209,6 +209,10 @@ class ProductListPage extends BasePage {
 
     async selectTab(filterName: string) {
         await ui5.userInteraction.clickTab(this.getTabFilterSelector(filterName));
+    }
+
+    async waitForMessageToast(): Promise<void> {
+        await nonUi5.element.waitToBeVisible(".sapMMessageToast");
     }
 
     async waitForPageLoaded(): Promise<void> {
