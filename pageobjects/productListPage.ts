@@ -99,7 +99,7 @@ class ProductListPage extends BasePage {
         }
     }
 
-    private getProductNameSiblingSelector(productName:string, baseSelector: Ui5Selector): Ui5Selector {
+    private getTableCellSiblingSelectorByProductName(productName:string, baseSelector: Ui5Selector): Ui5Selector {
         const elementSelector: Ui5Selector = {
             "elementProperties": baseSelector.elementProperties
         }
@@ -126,7 +126,7 @@ class ProductListPage extends BasePage {
     }
     
     async clickCheckboxForProduct(productName: string): Promise<void> {
-        const checkBoxSelector = this.getProductNameSiblingSelector(productName, 
+        const checkBoxSelector = this.getTableCellSiblingSelectorByProductName(productName, 
             ProductListPage.ITEM_CHECKBOX_SELECTOR);
         await ui5.userInteraction.check(checkBoxSelector);
     }
@@ -159,11 +159,11 @@ class ProductListPage extends BasePage {
     }
 
     async getProductDetails(productName: string): Promise<Product> {
-        const supplierNameSelector = this.getProductNameSiblingSelector(productName,
+        const supplierNameSelector = this.getTableCellSiblingSelectorByProductName(productName,
             ProductListPage.SUPPLIER_SELECTOR);
-        const priceSelector = this.getProductNameSiblingSelector(productName,
+        const priceSelector = this.getTableCellSiblingSelectorByProductName(productName,
             ProductListPage.PRICE_SELECTOR);
-        const unitsInStockSelector = this.getProductNameSiblingSelector(productName,
+        const unitsInStockSelector = this.getTableCellSiblingSelectorByProductName(productName,
             ProductListPage.UNITS_IN_STOCK_SELECTOR);
         return {
                 productName: productName,
