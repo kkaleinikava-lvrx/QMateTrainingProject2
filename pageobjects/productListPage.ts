@@ -99,42 +99,16 @@ class ProductListPage extends BasePage {
         }
     }
 
-    private getProductNameSiblingSelector(productName:string): Ui5Selector {
-        return {
-            "elementProperties": { },
-            "siblingProperties": {
+    private getProductNameSiblingSelector(productName:string, baseSelector: Ui5Selector): Ui5Selector {
+        const elementSelector: Ui5Selector = {
+            "elementProperties": baseSelector.elementProperties
+        }
+        elementSelector.siblingProperties = {
                 "viewName": "mycompany.myapp.MyWorklistApp.view.Worklist",
                 "metadata": "sap.m.ObjectIdentifier",
                 "title": productName
-            }
         }
-    }
-
-    private getSupplierNameSelectorForProduct(productName:string): Ui5Selector {
-        const supplierSelector: Ui5Selector = {
-            "elementProperties": ProductListPage.SUPPLIER_SELECTOR.elementProperties
-        }
-        supplierSelector.siblingProperties = 
-            this.getProductNameSiblingSelector(productName).siblingProperties;
-        return supplierSelector;
-    }
-
-    private getPriceSelectorForProduct(productName:string): Ui5Selector {
-        const priceSelector: Ui5Selector = {
-            "elementProperties": ProductListPage.PRICE_SELECTOR.elementProperties
-        }
-        priceSelector.siblingProperties = 
-            this.getProductNameSiblingSelector(productName).siblingProperties;
-        return priceSelector;
-    }
-
-    private getUnitsInStockSelectorForProduct(productName:string): Ui5Selector {
-        const unitsInStockSelector: Ui5Selector = {
-            "elementProperties": ProductListPage.UNITS_IN_STOCK_SELECTOR.elementProperties
-        }
-        unitsInStockSelector.siblingProperties = 
-            this.getProductNameSiblingSelector(productName).siblingProperties;
-        return unitsInStockSelector;      
+        return elementSelector;
     }
 
     private getListItemSelector(productName:string): Ui5Selector {
@@ -152,10 +126,8 @@ class ProductListPage extends BasePage {
     }
     
     async clickCheckboxForProduct(productName: string): Promise<void> {
-        const checkBoxSelector: Ui5Selector = {
-            "elementProperties": ProductListPage.ITEM_CHECKBOX_SELECTOR.elementProperties
-        }
-        checkBoxSelector.siblingProperties = this.getProductNameSiblingSelector(productName).siblingProperties;
+        const checkBoxSelector = this.getProductNameSiblingSelector(productName, 
+            ProductListPage.ITEM_CHECKBOX_SELECTOR);
         await ui5.userInteraction.check(checkBoxSelector);
     }
     
@@ -187,9 +159,12 @@ class ProductListPage extends BasePage {
     }
 
     async getProductDetails(productName: string): Promise<Product> {
-        const supplierNameSelector = this.getSupplierNameSelectorForProduct(productName);
-        const priceSelector = this.getPriceSelectorForProduct(productName);
-        const unitsInStockSelector = this.getUnitsInStockSelectorForProduct(productName);
+        const supplierNameSelector = this.getProductNameSiblingSelector(productName,
+            ProductListPage.SUPPLIER_SELECTOR);
+        const priceSelector = this.getProductNameSiblingSelector(productName,
+            ProductListPage.PRICE_SELECTOR);
+        const unitsInStockSelector = this.getProductNameSiblingSelector(productName,
+            ProductListPage.UNITS_IN_STOCK_SELECTOR);
         return {
                 productName: productName,
                 supplierName: await ui5.element.getPropertyValue(supplierNameSelector, "text"),
