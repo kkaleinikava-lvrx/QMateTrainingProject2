@@ -1,4 +1,4 @@
-import { QmateSelector } from "wdio-qmate-service/modules/ui5/types/ui5.types";
+import { Ui5Selector } from "wdio-qmate-service/modules/ui5/types/ui5.types";
 import { BasePage } from "./basePage.ts";
 import { Product } from "../support/product.ts";
 
@@ -89,7 +89,7 @@ class ProductListPage extends BasePage {
         }
     }
 
-    private getTabFilterSelector(filterName: string): QmateSelector {
+    private getTabFilterSelector(filterName: string): Ui5Selector {
         return {
              "elementProperties": {
                 "viewName": "mycompany.myapp.MyWorklistApp.view.Worklist",
@@ -99,7 +99,7 @@ class ProductListPage extends BasePage {
         }
     }
 
-    private getProductNameSiblingSelector(productName:string): QmateSelector {
+    private getProductNameSiblingSelector(productName:string): Ui5Selector {
         return {
             "elementProperties": { },
             "siblingProperties": {
@@ -110,25 +110,34 @@ class ProductListPage extends BasePage {
         }
     }
 
-    private getSupplierNameSelectorForProduct(productName:string): QmateSelector {
-        const titleSiblingSelector = this.getProductNameSiblingSelector(productName) as object;
-        return {
-            ...titleSiblingSelector, ...ProductListPage.SUPPLIER_SELECTOR} as QmateSelector;
+    private getSupplierNameSelectorForProduct(productName:string): Ui5Selector {
+        const supplierSelector: Ui5Selector = {
+            "elementProperties": ProductListPage.SUPPLIER_SELECTOR.elementProperties
+        }
+        supplierSelector.siblingProperties = 
+            this.getProductNameSiblingSelector(productName).siblingProperties;
+        return supplierSelector;
     }
 
-    private getPriceSelectorForProduct(productName:string): QmateSelector {
-        const titleSiblingSelector = this.getProductNameSiblingSelector(productName) as object;
-        return {
-            ...titleSiblingSelector, ...ProductListPage.PRICE_SELECTOR} as QmateSelector;
+    private getPriceSelectorForProduct(productName:string): Ui5Selector {
+        const priceSelector: Ui5Selector = {
+            "elementProperties": ProductListPage.PRICE_SELECTOR.elementProperties
+        }
+        priceSelector.siblingProperties = 
+            this.getProductNameSiblingSelector(productName).siblingProperties;
+        return priceSelector;
     }
 
-    private getUnitsInStockSelectorForProduct(productName:string): QmateSelector {
-        const titleSiblingSelector = this.getProductNameSiblingSelector(productName) as object;
-        return {
-            ...titleSiblingSelector, ...ProductListPage.UNITS_IN_STOCK_SELECTOR} as QmateSelector;      
+    private getUnitsInStockSelectorForProduct(productName:string): Ui5Selector {
+        const unitsInStockSelector: Ui5Selector = {
+            "elementProperties": ProductListPage.UNITS_IN_STOCK_SELECTOR.elementProperties
+        }
+        unitsInStockSelector.siblingProperties = 
+            this.getProductNameSiblingSelector(productName).siblingProperties;
+        return unitsInStockSelector;      
     }
 
-    private getListItemSelector(productName:string): QmateSelector {
+    private getListItemSelector(productName:string): Ui5Selector {
         return {
             "elementProperties": { 
                 "viewName": "mycompany.myapp.MyWorklistApp.view.Worklist",
@@ -143,8 +152,10 @@ class ProductListPage extends BasePage {
     }
     
     async clickCheckboxForProduct(productName: string): Promise<void> {
-        const checkBoxSelector = {...(this.getProductNameSiblingSelector(productName) as object), 
-            ...ProductListPage.ITEM_CHECKBOX_SELECTOR} as QmateSelector;
+        const checkBoxSelector: Ui5Selector = {
+            "elementProperties": ProductListPage.ITEM_CHECKBOX_SELECTOR.elementProperties
+        }
+        checkBoxSelector.siblingProperties = this.getProductNameSiblingSelector(productName).siblingProperties;
         await ui5.userInteraction.check(checkBoxSelector);
     }
     
