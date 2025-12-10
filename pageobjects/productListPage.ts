@@ -4,16 +4,6 @@ import { Product } from "../support/product.ts";
 
 class ProductListPage extends BasePage {
 
-    private static readonly ITEM_CHECKBOX_SELECTOR = {
-        "elementProperties": {
-            "viewName": "mycompany.myapp.MyWorklistApp.view.Worklist",
-            "metadata": "sap.m.CheckBox"
-        },
-        "ancestorProperties": {
-            "metadata": "sap.m.ColumnListItem"
-        }
-    }
-
     private static readonly ORDER_BUTTON_SELECTOR = {
         "elementProperties": {
             "viewName": "mycompany.myapp.MyWorklistApp.view.Worklist",
@@ -98,39 +88,7 @@ class ProductListPage extends BasePage {
             }
         }
     }
-
-    private getTableCellSiblingSelectorByProductName(productName:string, baseSelector: Ui5Selector): Ui5Selector {
-        const elementSelector: Ui5Selector = {
-            "elementProperties": baseSelector.elementProperties
-        }
-        elementSelector.siblingProperties = {
-                "viewName": "mycompany.myapp.MyWorklistApp.view.Worklist",
-                "metadata": "sap.m.ObjectIdentifier",
-                "title": productName
-        }
-        return elementSelector;
-    }
-
-    private getListItemSelector(productName:string): Ui5Selector {
-        return {
-            "elementProperties": { 
-                "viewName": "mycompany.myapp.MyWorklistApp.view.Worklist",
-                "metadata": "sap.m.ColumnListItem"
-            },
-            "childProperties": {
-                "viewName": "mycompany.myapp.MyWorklistApp.view.Worklist",
-                "metadata": "sap.m.ObjectIdentifier",
-                "title": productName
-            }
-        }
-    }
-    
-    async clickCheckboxForProduct(productName: string): Promise<void> {
-        const checkBoxSelector = this.getTableCellSiblingSelectorByProductName(productName, 
-            ProductListPage.ITEM_CHECKBOX_SELECTOR);
-        await ui5.userInteraction.check(checkBoxSelector);
-    }
-    
+   
     async clickOrderButton(): Promise<void> {
         await ui5.userInteraction.click(ProductListPage.ORDER_BUTTON_SELECTOR);
     }
@@ -140,7 +98,8 @@ class ProductListPage extends BasePage {
     }
     
     async clickProduct(productName: string): Promise<void> {
-        await ui5.userInteraction.clickListItem(this.getListItemSelector(productName));
+        await ui5.table.openItemByValues(ProductListPage.TABLE_SELECTOR, productName, 0, 
+            false, "exact");
     }
 
     async getTabFilterCount(filterName: string): Promise<number> {
@@ -159,18 +118,20 @@ class ProductListPage extends BasePage {
     }
 
     async getProductDetails(productName: string): Promise<Product> {
-        const supplierNameSelector = this.getTableCellSiblingSelectorByProductName(productName,
-            ProductListPage.SUPPLIER_SELECTOR);
-        const priceSelector = this.getTableCellSiblingSelectorByProductName(productName,
-            ProductListPage.PRICE_SELECTOR);
-        const unitsInStockSelector = this.getTableCellSiblingSelectorByProductName(productName,
-            ProductListPage.UNITS_IN_STOCK_SELECTOR);
+        const tableRowSelector = (await ui5.table.getSelectorsForRowsByValues(
+            ProductListPage.TABLE_SELECTOR, productName, false, "exact"))[0];
+        const supplierNameElement = await ui5.element.getByParent(
+            ProductListPage.SUPPLIER_SELECTOR, tableRowSelector);
+        const priceElement = await ui5.element.getByParent(
+            ProductListPage.PRICE_SELECTOR, tableRowSelector);
+        const unitsInStockElement = await ui5.element.getByParent(
+            ProductListPage.UNITS_IN_STOCK_SELECTOR, tableRowSelector);
         return {
                 productName: productName,
-                supplierName: await ui5.element.getPropertyValue(supplierNameSelector, "text"),
-                price: await ui5.element.getPropertyValue(priceSelector, "number") + " " +
-                    await ui5.element.getPropertyValue(priceSelector, "unit"),
-                unitsInStock: parseInt(await ui5.element.getPropertyValue(unitsInStockSelector, "number"))
+                supplierName: await ui5.control.getProperty(supplierNameElement, "text"),
+                price: await ui5.control.getProperty(priceElement, "number") + " " +
+                    await ui5.control.getProperty(priceElement, "unit"),
+                unitsInStock: parseInt(await ui5.control.getProperty(unitsInStockElement, "number"))
         }
     }
 
@@ -192,7 +153,11 @@ class ProductListPage extends BasePage {
     async searchForProduct(searchText: string): Promise<void> {
         await ui5.userInteraction.searchFor(ProductListPage.SEARCH_FIELD_SELECTOR, searchText);
     }
-
+  
+    async selectRowForProduct(productName: string): Promise<void> {
+        await ui5.table.selectRowByValues(ProductListPage.TABLE_SELECTOR, productName, 0);
+    }
+ 
     async selectTab(filterName: string) {
         await ui5.userInteraction.clickTab(this.getTabFilterSelector(filterName));
     }

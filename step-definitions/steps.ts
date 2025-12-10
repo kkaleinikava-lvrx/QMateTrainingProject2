@@ -24,7 +24,7 @@ When ('Select product {string}', async function(productName: string): Promise<vo
 });
 
 When ('Order product {string}', async function(productName: string): Promise<void> {
-    await ProductListPage.clickCheckboxForProduct(productName);
+    await ProductListPage.selectRowForProduct(productName);
     await browser.takeScreenshot();
     await ProductListPage.orderProduct();
     await browser.takeScreenshot();
@@ -35,7 +35,7 @@ When ('Remove product {string}', async function(productName: string): Promise<vo
     for (let option of filterOptions) {
         this.storeFilterCount(option, await ProductListPage.getTabFilterCount(option));
     }
-    await ProductListPage.clickCheckboxForProduct(productName);
+    await ProductListPage.selectRowForProduct(productName);
     await browser.takeScreenshot();
     await ProductListPage.removeProduct();
     await browser.takeScreenshot();
